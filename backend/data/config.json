@@ -1,0 +1,30 @@
+{
+  "active_skills": {
+    "qa": [
+      "qa_skill.md",
+      "uat_exec_skill.md",
+      "qa_validate_skill.md"
+    ],
+    "validation": [
+      "qa_validate_skill.md"
+    ],
+    "uat": [
+      "uat_exec_skill.md"
+    ],
+    "ux": [
+      "ux_skill.md"
+    ],
+    "mockup": [
+      "mockup_skill.md",
+      "uat_exec_skill.md"
+    ]
+  },
+  "playwright": {
+    "wait_until": "load",
+    "networkidle_cap_ms": 5000,
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    }
+  }
+}

@@ -1,0 +1,42 @@
+#!/bin/bash
+# Usage:
+#   ~/ai-review-hub/logs          → all live logs
+#   ~/ai-review-hub/logs backend  → backend only
+#   ~/ai-review-hub/logs app      → app.log (the sanitized application log)
+#   ~/ai-review-hub/logs exec     → executor/Playwright activity
+#   ~/ai-review-hub/logs save     → dump last 500 lines of everything to a file
+
+ROOT="$HOME/ai-review-hub"
+WHAT="${1:-all}"
+
+case "$WHAT" in
+  backend) tail -f /tmp/airh-backend.log ;;
+  app)     tail -f "$ROOT/backend/data/app.log" ;;
+  frontend|vite) tail -f /tmp/vite.log ;;
+  ngrok)   tail -f /tmp/ngrok.log ;;
+  exec)
+    echo "Tailing executor activity (Ctrl+C to stop)..."
+    tail -f "$ROOT/backend/data/app.log" | grep -E --line-buffered "uat_executor|uat_exec|executing|PASS|FAIL|ERROR"
+    ;;
+  save)
+    OUT="$HOME/Desktop/airh-logs-$(date +%Y%m%d-%H%M%S).txt"
+    {
+      echo "════ BACKEND LOG ════"; tail -500 /tmp/airh-backend.log 2>/dev/null
+      echo ""; echo "════ APP LOG ════"; tail -500 "$ROOT/backend/data/app.log" 2>/dev/null
+      echo ""; echo "════ VITE LOG ════"; tail -200 /tmp/vite.log 2>/dev/null
+      echo ""; echo "════ NGROK LOG ════"; tail -50 /tmp/ngrok.log 2>/dev/null
+      echo ""; echo "════ AUDIT TAIL ════"; tail -100 "$ROOT/backend/data/audit.jsonl" 2>/dev/null
+    } > "$OUT"
+    echo "Saved to: $OUT"
+    echo "Copy that file's contents to paste to me."
+    ;;
+  all|*)
+    echo "════════ AI Review Hub — LIVE LOGS ════════"
+    echo "  Backend : /tmp/airh-backend.log"
+    echo "  App     : $ROOT/backend/data/app.log"
+    echo "  Frontend: /tmp/vite.log"
+    echo "  Ctrl+C to stop. Run '~/ai-review-hub/logs save' to dump to a file."
+    echo ""
+    tail -f /tmp/airh-backend.log "$ROOT/backend/data/app.log" /tmp/vite.log 2>/dev/null | grep -E --line-buffered -v "GET /api/health|HMR|hmr update"
+    ;;
+esac

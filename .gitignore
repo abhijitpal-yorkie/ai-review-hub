@@ -1,0 +1,44 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+.env.lexful
+backend/.env
+backend/.env.lexful
+**/.env
+**/.env.lexful
+
+# Runtime data
+backend/data/settings.json
+backend/data/lexful_personas.json
+backend/data/audit.jsonl*
+backend/data/history/
+backend/data/app.log
+backend/failure_screenshots/
+backend/uploads/
+
+# Python
+venv/
+**/venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+*.egg-info/
+
+# Node
+node_modules/
+**/node_modules/
+frontend/dist/
+.vite/
+**/.vite/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
